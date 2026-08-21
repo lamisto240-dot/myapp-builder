@@ -1,121 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F6F9"
-    android:fitsSystemWindows="true">
+    android:orientation="vertical"
+    android:background="#F8F9FA">
 
-    <!-- Top App Bar / Chat Header -->
-    <LinearLayout
-        android:id="@+id/headerLayout"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#0084FF"
-        android:elevation="4dp"
-        android:paddingBottom="8dp">
+        android:background="?attr/colorPrimary"
+        app:title="@string/app_name"
+        app:titleTextColor="@android:color/white"
+        android:elevation="4dp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:paddingHorizontal="16dp">
-
-            <TextView
-                android:id="@+id/tvActiveContact"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="AI Bot 🤖"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvActiveContact"
-                android:text="Online • Tap contact to switch"
-                android:textColor="#E0E0E0"
-                android:textSize="11sp" />
-
-            <ImageButton
-                android:id="@+id/btnClearChat"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Clear Chat"
-                android:src="@android:drawable/ic_menu_delete"
-                app:tint="#FFFFFF" />
-        </RelativeLayout>
-
-        <!-- Contact Switcher Chips -->
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:paddingHorizontal="12dp">
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupContacts"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:singleSelection="true">
-
-            </com.google.android.material.chip.ChipGroup>
-        </HorizontalScrollView>
-    </LinearLayout>
-
-    <!-- Message History List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMessages"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/headerLayout"
-        android:layout_above="@id/inputContainer"
-        android:clipToPadding="false"
-        android:padding="12dp" />
-
-    <!-- Message Input Bar -->
     <LinearLayout
-        android:id="@+id/inputContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:background="#FFFFFF"
-        android:elevation="8dp"
-        android:padding="8dp"
+        android:padding="16dp"
         android:gravity="center_vertical">
 
-        <EditText
-            android:id="@+id/etMessage"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@android:color/transparent"
-            android:hint="@string/type_message"
-            android:textColorHint="#999999"
-            android:textColor="#222222"
-            android:maxLines="4"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="10dp"
-            android:textSize="15sp" />
+            android:hint="@string/add_task_hint"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnSend"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:contentDescription="Send"
-            app:fabCustomSize="44dp"
-            app:maxImageSize="20dp"
-            app:elevation="0dp"
-            app:backgroundTint="#0084FF"
-            app:tint="#FFFFFF"
-            android:src="@android:drawable/ic_menu_send" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTaskInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences"
+                android:maxLines="2" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAddTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@string/add_button"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp" />
+
     </LinearLayout>
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/tvEmptyState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="32dp"
+        android:text="@string/empty_list_message"
+        android:textColor="#757575"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTaskList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingTop="4dp"
+        android:clipToPadding="false" />
+
+</LinearLayout>
