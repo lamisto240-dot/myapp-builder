@@ -12,5 +12,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "QuickTimer"
+
+rootProject.name = "App_chat_1"
 include ':app'
