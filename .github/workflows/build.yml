@@ -23,10 +23,10 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Generate Gradle Wrapper
+      - name: Generate Gradle Wrapper (version 8.5)
         run: |
           if [ ! -f gradlew ]; then
-            gradle wrapper
+            gradle wrapper --gradle-version 8.5
           fi
           chmod +x gradlew
 
