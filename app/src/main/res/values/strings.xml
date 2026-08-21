@@ -1,16 +1,3 @@
 <resources>
-    <string name="app_name">CyberLight Retro</string>
-    <string name="title_cyberlight">CYBERLIGHT</string>
-    <string name="subtitle_retro">// RETRO MATRIX TORCH v1.0</string>
-    <string name="status_off">SYSTEM: STANDBY</string>
-    <string name="status_on">SYSTEM: TORCH ACTIVE</string>
-    <string name="status_strobe">SYSTEM: STROBE ACTIVE</string>
-    <string name="status_sos">SYSTEM: S.O.S BEACON ACTIVE</string>
-    <string name="strobe_label">STROBE FREQUENCY</string>
-    <string name="strobe_hz">%d HZ</string>
-    <string name="btn_strobe">STROBE MODE</string>
-    <string name="btn_sos">S.O.S.</string>
-    <string name="btn_screen">SCREEN FLASH</string>
-    <string name="perm_required">Camera permission required for flash access</string>
-    <string name="no_flash_found">Hardware flash unit not available!</string>
+    <string name="app_name">App_chat_1</string>
 </resources>
