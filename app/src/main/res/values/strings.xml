@@ -1,17 +1,6 @@
 <resources>
-    <string name="app_name">TipCalc</string>
-    <string name="bill_amount">Bill Amount ($)</string>
-    <string name="tip_percentage">Tip Percentage (%)</string>
-    <string name="calculate">Calculate Tip</string>
-    <string name="tip_amount_label">Tip Amount</string>
-    <string name="total_amount_label">Total Amount</string>
-    <string name="per_person_label">Per Person</string>
-    <string name="default_amount">$0.00</string>
-    <string name="quick_tips">Quick Tip Selection</string>
-    <string name="tip_10">10%</string>
-    <string name="tip_15">15%</string>
-    <string name="tip_18">18%</string>
-    <string name="tip_20">20%</string>
-    <string name="number_of_people">Split between (people)</string>
-    <string name="invalid_input">Please enter valid values</string>
+    <string name="app_name">QuickTimer</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="reset">Reset</string>
 </resources>
