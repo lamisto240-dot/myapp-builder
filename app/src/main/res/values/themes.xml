@@ -1,13 +1,14 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.App_chat_1" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">#1E88E5</item>
-        <item name="colorPrimaryVariant">#1565C0</item>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.TipCalc" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#006874</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorSecondary">#26A69A</item>
-        <item name="colorSecondaryVariant">#00897B</item>
+        <item name="colorPrimaryContainer">#97F0FF</item>
+        <item name="colorOnPrimaryContainer">#001F25</item>
+        <item name="colorSecondary">#4A6267</item>
         <item name="colorOnSecondary">#FFFFFF</item>
-        <item name="android:statusBarColor">#1565C0</item>
+        <item name="colorSecondaryContainer">#CCE8E3</item>
+        <item name="colorOnSecondaryContainer">#051F23</item>
+        <item name="android:statusBarColor">#006874</item>
     </style>
-
-    <style name="Theme.App_chat_1" parent="Base.Theme.App_chat_1" />
 </resources>
