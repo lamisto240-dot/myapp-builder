@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">QuickTimer</string>
-    <string name="start">Start</string>
-    <string name="stop">Stop</string>
-    <string name="reset">Reset</string>
+    <string name="app_name">App_chat_1</string>
+    <string name="title_chats">Chats</string>
+    <string name="type_message">Type a message...</string>
+    <string name="online">Online</string>
+    <string name="typing">typing...</string>
 </resources>
