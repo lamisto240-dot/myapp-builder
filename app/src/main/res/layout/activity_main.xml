@@ -1,255 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainRootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0D0D18"
-    android:padding="20dp">
+    android:background="#F5F7FB">
 
-    <!-- Screen Flash Overlay view -->
-    <View
-        android:id="@+id/screenFlashOverlay"
+    <!-- Top Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#FFFFFF"
-        android:visibility="gone"
-        android:elevation="100dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:titleTextColor="@android:color/white"
+        app:subtitleTextColor="#D0E0FF" />
+
+    <!-- Chat Messages List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewChat"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_bottom_toTopOf="@id/tvTypingIndicator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- TOP HEADER / HUD TITLE -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/headerCard"
-        android:layout_width="0dp"
+    <!-- Typing Indicator -->
+    <TextView
+        android:id="@+id/tvTypingIndicator"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:cardBackgroundColor="#131326"
-        app:cardCornerRadius="12dp"
+        android:text="Alex is typing..."
+        android:textSize="12sp"
+        android:textStyle="italic"
+        android:textColor="#757575"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="4dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/quickRepliesScrollView"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Quick Replies Bar -->
+    <HorizontalScrollView
+        android:id="@+id/quickRepliesScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        app:layout_constraintBottom_toTopOf="@id/inputCard">
+
+        <LinearLayout
+            android:id="@+id/quickRepliesContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp" />
+    </HorizontalScrollView>
+
+    <!-- Bottom Input Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/inputCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
         app:cardElevation="8dp"
-        app:strokeColor="#00F0FF"
-        app:strokeWidth="2dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:strokeWidth="0dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:gravity="center">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="8dp">
 
-            <TextView
-                android:id="@+id/tvTitle"
+            <EditText
+                android:id="@+id/etMessage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Type a message..."
+                android:inputType="textCapSentences|textMultiLine"
+                android:maxLines="4"
+                android:padding="12dp"
+                android:background="@android:color/transparent"
+                android:textSize="15sp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnSend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_cyberlight"
-                android:textColor="#00F0FF"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.2" />
-
-            <TextView
-                android:id="@+id/tvSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/subtitle_retro"
-                android:textColor="#FF0055"
-                android:textSize="12sp"
-                android:letterSpacing="0.1" />
-
-            <TextView
-                android:id="@+id/tvStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/status_off"
-                android:textColor="#FFE600"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:fontFamily="monospace" />
-
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- CENTER POWER TOGGLE BUTTON -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/btnPowerContainer"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        app:cardCornerRadius="90dp"
-        app:cardBackgroundColor="#1A1A30"
-        app:cardElevation="16dp"
-        app:strokeColor="#00F0FF"
-        app:strokeWidth="4dp"
-        app:layout_constraintTop_toBottomOf="@id/headerCard"
-        app:layout_constraintBottom_toTopOf="@id/strobeCard"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <FrameLayout
-            android:id="@+id/btnPower"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackgroundBorderless">
-
-            <!-- Glowing Ring Effect View -->
-            <View
-                android:id="@+id/powerGlowView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#1F00F0FF" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/powerIcon"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@android:drawable/ic_lock_power_snapshot"
-                    app:tint="#00F0FF" />
-
-                <TextView
-                    android:id="@+id/tvPowerState"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="POWER"
-                    android:textColor="#00F0FF"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.15" />
-            </LinearLayout>
-
-        </FrameLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- STROBE & EFFECT CONTROLS CARD -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/strobeCard"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:cardBackgroundColor="#131326"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
-        app:strokeColor="#FF0055"
-        app:strokeWidth="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- Strobe Header & Toggle -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/tvStrobeLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/strobe_label"
-                    android:textColor="#FF0055"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1" />
-
-                <TextView
-                    android:id="@+id/tvHzValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:text="5 HZ"
-                    android:textColor="#FFE600"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:fontFamily="monospace" />
-            </RelativeLayout>
-
-            <!-- Frequency Slider -->
-            <SeekBar
-                android:id="@+id/seekBarFrequency"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp"
-                android:max="20"
-                android:progress="5"
-                android:progressTint="#FF0055"
-                android:thumbTint="#00F0FF" />
-
-            <!-- Cyberpunk Action Mode Buttons -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnModeStrobe"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-                    android:layout_weight="1"
-                    android:text="STROBE"
-                    android:textColor="#00F0FF"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    app:strokeColor="#00F0FF"
-                    app:strokeWidth="1.5dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnModeSos"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginEnd="2dp"
-                    android:layout_weight="1"
-                    android:text="S.O.S."
-                    android:textColor="#FF0055"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    app:strokeColor="#FF0055"
-                    app:strokeWidth="1.5dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnModeScreen"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_weight="1"
-                    android:text="SCREEN"
-                    android:textColor="#FFE600"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    app:strokeColor="#FFE600"
-                    app:strokeWidth="1.5dp" />
-
-            </LinearLayout>
-
+                android:contentDescription="Send"
+                app:fabCustomSize="44dp"
+                app:maxImageSize="20dp"
+                app:srcCompat="@android:drawable/ic_menu_send"
+                app:tint="@android:color/white"
+                app:elevation="2dp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
