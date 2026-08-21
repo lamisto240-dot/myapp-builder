@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.appchat1'
+    namespace 'com.example.simplelist'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.appchat1"
+        applicationId "com.example.simplelist"
         minSdk 24
         targetSdk 34
         versionCode 1
