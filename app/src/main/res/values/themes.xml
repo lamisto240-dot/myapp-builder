@@ -1,12 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="Base.Theme.TipCalc" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">#2563EB</item>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.QuickTimer" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#2E7D32</item>
+        <item name="colorPrimaryVariant">#1B5E20</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorPrimaryContainer">#DBEAFE</item>
-        <item name="colorOnPrimaryContainer">#1E40AF</item>
-        <item name="colorSecondary">#0D9488</item>
-        <item name="android:statusBarColor">#2563EB</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
     </style>
-    <style name="Theme.TipCalc" parent="Base.Theme.TipCalc" />
 </resources>
