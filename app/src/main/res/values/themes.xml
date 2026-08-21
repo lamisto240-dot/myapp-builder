@@ -1,20 +1,13 @@
-<resources>
-    <style name="Theme.CyberLightRetro" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color -->
-        <item name="colorPrimary">#00F0FF</item>
-        <item name="colorPrimaryVariant">#00B8C4</item>
-        <item name="colorOnPrimary">#000000</item>
-
-        <!-- Secondary brand color -->
-        <item name="colorSecondary">#FF0055</item>
-        <item name="colorSecondaryVariant">#B3003B</item>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.App_chat_1" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#1E88E5</item>
+        <item name="colorPrimaryVariant">#1565C0</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">#26A69A</item>
+        <item name="colorSecondaryVariant">#00897B</item>
         <item name="colorOnSecondary">#FFFFFF</item>
-
-        <!-- Status bar color -->
-        <item name="android:statusBarColor">#0D0D18</item>
-        <item name="android:navigationBarColor">#0D0D18</item>
-
-        <!-- Background color -->
-        <item name="android:windowBackground">#0D0D18</item>
+        <item name="android:statusBarColor">#1565C0</item>
     </style>
+
+    <style name="Theme.App_chat_1" parent="Base.Theme.App_chat_1" />
 </resources>
