@@ -1,4 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">App_chat_1</string>
-    <string name="type_message">Type a message...</string>
+    <string name="app_name">ColorFlip</string>
+    <string name="flip_color">FLIP COLOR</string>
+    <string name="copied_to_clipboard">Color code copied to clipboard!</string>
+    <string name="tap_to_copy">Tap card to copy hex code</string>
+    <string name="background_color">Current Color</string>
 </resources>
