@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.TipCalc" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">#006874</item>
+    <style name="Base.Theme.TipCalc" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#2563EB</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorPrimaryContainer">#97F0FF</item>
-        <item name="colorOnPrimaryContainer">#001F25</item>
-        <item name="colorSecondary">#4A6267</item>
-        <item name="colorOnSecondary">#FFFFFF</item>
-        <item name="colorSecondaryContainer">#CCE8E3</item>
-        <item name="colorOnSecondaryContainer">#051F23</item>
-        <item name="android:statusBarColor">#006874</item>
+        <item name="colorPrimaryContainer">#DBEAFE</item>
+        <item name="colorOnPrimaryContainer">#1E40AF</item>
+        <item name="colorSecondary">#0D9488</item>
+        <item name="android:statusBarColor">#2563EB</item>
     </style>
+    <style name="Theme.TipCalc" parent="Base.Theme.TipCalc" />
 </resources>
