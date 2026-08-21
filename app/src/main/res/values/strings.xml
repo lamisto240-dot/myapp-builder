@@ -1,7 +1,4 @@
 <resources>
-    <string name="app_name">SimpleList</string>
-    <string name="add_task_hint">Enter task description…</string>
-    <string name="add_button">Add</string>
-    <string name="delete_task">Delete task</string>
-    <string name="empty_list_message">No tasks yet! Add one above.</string>
+    <string name="app_name">App_chat_1</string>
+    <string name="type_message">Type a message...</string>
 </resources>
