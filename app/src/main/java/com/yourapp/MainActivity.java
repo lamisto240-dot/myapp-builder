@@ -1,429 +1,328 @@
 package com.yourapp;
 
-import android.app.AlertDialog;
-import android.content.Intent;
+import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Typeface;
-import android.net.Uri;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.Stack;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText etContent;
-    private TextView tvFileName;
-    private TextView tvStats;
-    private LinearLayout searchContainer;
+    private RecyclerView recyclerView;
+    private NotesAdapter adapter;
+    private List<Note> noteList;
+    private List<Note> filteredList;
+    private DatabaseHelper dbHelper;
+    private LinearLayout layoutEmpty;
     private EditText etSearch;
-    private EditText etReplace;
-
-    private Uri currentFileUri = null;
-    private String currentFileName = "Untitled.txt";
-    private boolean isModified = false;
-    private float currentFontSize = 16f; // sp
-    private boolean isMonospace = false;
-
-    // Undo / Redo stacks
-    private final Stack<String> undoStack = new Stack<>();
-    private final Stack<String> redoStack = new Stack<>();
-    private boolean isUndoRedoOperation = false;
-    private String lastPushedText = "";
-
-    // File Pickers using Storage Access Framework
-    private final ActivityResultLauncher<String[]> openFileLauncher =
-            registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
-                if (uri != null) {
-                    openUri(uri);
-                }
-            });
-
-    private final ActivityResultLauncher<String> saveFileLauncher =
-            registerForActivityResult(new ActivityResultContracts.CreateDocument("text/plain"), uri -> {
-                if (uri != null) {
-                    currentFileUri = uri;
-                    saveToUri(uri);
-                }
-            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initViews();
-        setupListeners();
-        updateTitle();
-        updateStats();
-    }
+        dbHelper = new DatabaseHelper(this);
+        noteList = new ArrayList<>();
+        filteredList = new ArrayList<>();
 
-    private void initViews() {
-        etContent = findViewById(R.id.et_content);
-        tvFileName = findViewById(R.id.tv_file_name);
-        tvStats = findViewById(R.id.tv_stats);
-        searchContainer = findViewById(R.id.search_container);
-        etSearch = findViewById(R.id.et_search);
-        etReplace = findViewById(R.id.et_replace);
+        recyclerView = findViewById(R.id.recyclerViewNotes);
+        layoutEmpty = findViewById(R.id.layoutEmpty);
+        etSearch = findViewById(R.id.etSearch);
+        FloatingActionButton fabAddNote = findViewById(R.id.fabAddNote);
 
-        Button btnNew = findViewById(R.id.btn_new);
-        Button btnOpen = findViewById(R.id.btn_open);
-        Button btnSave = findViewById(R.id.btn_save);
-        Button btnSearchToggle = findViewById(R.id.btn_search_toggle);
-        Button btnShare = findViewById(R.id.btn_share);
-        Button btnUndo = findViewById(R.id.btn_undo);
-        Button btnRedo = findViewById(R.id.btn_redo);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        adapter = new NotesAdapter(filteredList);
+        recyclerView.setAdapter(adapter);
 
-        Button btnFindNext = findViewById(R.id.btn_find_next);
-        Button btnDoReplace = findViewById(R.id.btn_do_replace);
-        Button btnReplaceAll = findViewById(R.id.btn_replace_all);
-        Button btnCloseSearch = findViewById(R.id.btn_close_search);
+        fabAddNote.setOnClickListener(v -> showNoteDialog(null));
 
-        Button btnZoomIn = findViewById(R.id.btn_zoom_in);
-        Button btnZoomOut = findViewById(R.id.btn_zoom_out);
-        Button btnToggleFont = findViewById(R.id.btn_toggle_font);
-
-        btnNew.setOnClickListener(v -> actionNewFile());
-        btnOpen.setOnClickListener(v -> actionOpenFile());
-        btnSave.setOnClickListener(v -> actionSaveFile());
-        btnSearchToggle.setOnClickListener(v -> toggleSearchContainer());
-        btnShare.setOnClickListener(v -> actionShareText());
-        btnUndo.setOnClickListener(v -> actionUndo());
-        btnRedo.setOnClickListener(v -> actionRedo());
-
-        btnFindNext.setOnClickListener(v -> findNext());
-        btnDoReplace.setOnClickListener(v -> replaceNext());
-        btnReplaceAll.setOnClickListener(v -> replaceAll());
-        btnCloseSearch.setOnClickListener(v -> searchContainer.setVisibility(View.GONE));
-
-        btnZoomIn.setOnClickListener(v -> changeFontSize(2f));
-        btnZoomOut.setOnClickListener(v -> changeFontSize(-2f));
-        btnToggleFont.setOnClickListener(v -> toggleFontType());
-    }
-
-    private void setupListeners() {
-        etContent.addTextChangedListener(new TextWatcher() {
+        etSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (!isUndoRedoOperation && lastPushedText == null) {
-                    lastPushedText = s.toString();
-                }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterNotes(s.toString());
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                updateStats();
-                if (!isUndoRedoOperation) {
-                    String currentText = s.toString();
-                    if (!currentText.equals(lastPushedText)) {
-                        if (lastPushedText != null) {
-                            undoStack.push(lastPushedText);
-                            redoStack.clear();
-                        }
-                        lastPushedText = currentText;
-                        if (!isModified) {
-                            isModified = true;
-                            updateTitle();
-                        }
-                    }
-                }
-            }
+            public void afterTextChanged(Editable s) {}
         });
+
+        loadNotes();
     }
 
-    private void actionNewFile() {
-        if (isModified) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Unsaved Changes")
-                    .setMessage("You have unsaved changes. Create new file anyway?")
-                    .setPositiveButton("Yes", (dialog, which) -> createNewFile())
-                    .setNegativeButton("No", null)
-                    .show();
+    private void loadNotes() {
+        noteList.clear();
+        noteList.addAll(dbHelper.getAllNotes());
+        filterNotes(etSearch.getText().toString());
+    }
+
+    private void filterNotes(String query) {
+        filteredList.clear();
+        if (query.trim().isEmpty()) {
+            filteredList.addAll(noteList);
         } else {
-            createNewFile();
-        }
-    }
-
-    private void createNewFile() {
-        isUndoRedoOperation = true;
-        etContent.setText("");
-        isUndoRedoOperation = false;
-
-        currentFileUri = null;
-        currentFileName = "Untitled.txt";
-        isModified = false;
-        undoStack.clear();
-        redoStack.clear();
-        lastPushedText = "";
-        updateTitle();
-        Toast.makeText(this, "New file created", Toast.LENGTH_SHORT).show();
-    }
-
-    private void actionOpenFile() {
-        if (isModified) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Unsaved Changes")
-                    .setMessage("You have unsaved changes. Open file anyway?")
-                    .setPositiveButton("Yes", (dialog, which) -> openFileLauncher.launch(new String[]{"text/plain", "text/*", "*/*"}))
-                    .setNegativeButton("No", null)
-                    .show();
-        } else {
-            openFileLauncher.launch(new String[]{"text/plain", "text/*", "*/*"});
-        }
-    }
-
-    private void actionSaveFile() {
-        if (currentFileUri != null) {
-            saveToUri(currentFileUri);
-        } else {
-            saveFileLauncher.launch(currentFileName);
-        }
-    }
-
-    private void openUri(Uri uri) {
-        try (InputStream inputStream = getContentResolver().openInputStream(uri);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-
-            if (sb.length() > 0 && sb.charAt(sb.length() - 1) == '\n') {
-                sb.setLength(sb.length() - 1);
-            }
-
-            currentFileUri = uri;
-            currentFileName = getFileNameFromUri(uri);
-
-            isUndoRedoOperation = true;
-            etContent.setText(sb.toString());
-            isUndoRedoOperation = false;
-
-            undoStack.clear();
-            redoStack.clear();
-            lastPushedText = sb.toString();
-            isModified = false;
-
-            updateTitle();
-            Toast.makeText(this, "File opened", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(this, "Error reading file", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void saveToUri(Uri uri) {
-        try (OutputStream outputStream = getContentResolver().openOutputStream(uri, "wt")) {
-            if (outputStream != null) {
-                outputStream.write(etContent.getText().toString().getBytes());
-                outputStream.flush();
-                isModified = false;
-                currentFileName = getFileNameFromUri(uri);
-                updateTitle();
-                Toast.makeText(this, "Saved successfully", Toast.LENGTH_SHORT).show();
-            }
-        } catch (Exception e) {
-            Toast.makeText(this, "Error saving file", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private String getFileNameFromUri(Uri uri) {
-        String result = null;
-        if ("content".equals(uri.getScheme())) {
-            try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
-                if (cursor != null && cursor.moveToFirst()) {
-                    int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                    if (nameIndex != -1) {
-                        result = cursor.getString(nameIndex);
-                    }
+            String lowerQuery = query.toLowerCase().trim();
+            for (Note note : noteList) {
+                if (note.getTitle().toLowerCase().contains(lowerQuery) ||
+                        note.getContent().toLowerCase().contains(lowerQuery)) {
+                    filteredList.add(note);
                 }
-            } catch (Exception ignored) {}
-        }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result != null ? result.lastIndexOf('/') : -1;
-            if (cut != -1) {
-                result = result.substring(cut + 1);
             }
         }
-        return result != null ? result : "Untitled.txt";
-    }
+        adapter.notifyDataSetChanged();
 
-    private void actionShareText() {
-        String text = etContent.getText().toString();
-        if (text.isEmpty()) {
-            Toast.makeText(this, "Nothing to share", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, currentFileName);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, text);
-        startActivity(Intent.createChooser(shareIntent, "Share text via"));
-    }
-
-    private void actionUndo() {
-        if (!undoStack.isEmpty()) {
-            String currentText = etContent.getText().toString();
-            redoStack.push(currentText);
-
-            String prevText = undoStack.pop();
-            isUndoRedoOperation = true;
-            etContent.setText(prevText);
-            etContent.setSelection(prevText.length());
-            isUndoRedoOperation = false;
-            lastPushedText = prevText;
-
-            updateTitle();
+        if (filteredList.isEmpty()) {
+            layoutEmpty.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
         } else {
-            Toast.makeText(this, "Nothing to undo", Toast.LENGTH_SHORT).show();
+            layoutEmpty.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 
-    private void actionRedo() {
-        if (!redoStack.isEmpty()) {
-            String currentText = etContent.getText().toString();
-            undoStack.push(currentText);
+    private void showNoteDialog(Note noteToEdit) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_note, null);
+        builder.setView(dialogView);
 
-            String nextText = redoStack.pop();
-            isUndoRedoOperation = true;
-            etContent.setText(nextText);
-            etContent.setSelection(nextText.length());
-            isUndoRedoOperation = false;
-            lastPushedText = nextText;
+        TextView tvDialogTitle = dialogView.findViewById(R.id.tvDialogTitle);
+        EditText etNoteTitle = dialogView.findViewById(R.id.etNoteTitle);
+        EditText etNoteContent = dialogView.findViewById(R.id.etNoteContent);
 
-            updateTitle();
+        if (noteToEdit != null) {
+            tvDialogTitle.setText("Edit Note");
+            etNoteTitle.setText(noteToEdit.getTitle());
+            etNoteContent.setText(noteToEdit.getContent());
         } else {
-            Toast.makeText(this, "Nothing to redo", Toast.LENGTH_SHORT).show();
+            tvDialogTitle.setText("New Note");
+        }
+
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String title = etNoteTitle.getText().toString().trim();
+            String content = etNoteContent.getText().toString().trim();
+
+            if (title.isEmpty() && content.isEmpty()) {
+                Toast.makeText(MainActivity.this, "Cannot save empty note", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (title.isEmpty()) {
+                title = "Untitled Note";
+            }
+
+            String date = new SimpleDateFormat("MMM dd, yyyy - hh:mm a", Locale.getDefault()).format(new Date());
+
+            if (noteToEdit == null) {
+                Note newNote = new Note(-1, title, content, date);
+                dbHelper.addNote(newNote);
+            } else {
+                noteToEdit.setTitle(title);
+                noteToEdit.setContent(content);
+                noteToEdit.setDate(date);
+                dbHelper.updateNote(noteToEdit);
+            }
+
+            loadNotes();
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void confirmDelete(Note note) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Note")
+                .setMessage("Are you sure you want to delete this note?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    dbHelper.deleteNote(note.getId());
+                    loadNotes();
+                    Toast.makeText(MainActivity.this, "Note deleted", Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    // --- Model Class ---
+    public static class Note {
+        private long id;
+        private String title;
+        private String content;
+        private String date;
+
+        public Note(long id, String title, String content, String date) {
+            this.id = id;
+            this.title = title;
+            this.content = content;
+            this.date = date;
+        }
+
+        public long getId() { return id; }
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
+        public String getContent() { return content; }
+        public void setContent(String content) { this.content = content; }
+        public String getDate() { return date; }
+        public void setDate(String date) { this.date = date; }
+    }
+
+    // --- Adapter Class ---
+    private class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHolder> {
+
+        private final List<Note> notes;
+
+        public NotesAdapter(List<Note> notes) {
+            this.notes = notes;
+        }
+
+        @NonNull
+        @Override
+        public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_note, parent, false);
+            return new NoteViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
+            Note note = notes.get(position);
+            holder.tvTitle.setText(note.getTitle());
+            holder.tvContent.setText(note.getContent());
+            holder.tvDate.setText(note.getDate());
+
+            holder.itemView.setOnClickListener(v -> showNoteDialog(note));
+            holder.btnDelete.setOnClickListener(v -> confirmDelete(note));
+        }
+
+        @Override
+        public int getItemCount() {
+            return notes.size();
+        }
+
+        class NoteViewHolder extends RecyclerView.ViewHolder {
+            TextView tvTitle, tvContent, tvDate;
+            ImageButton btnDelete;
+
+            public NoteViewHolder(@NonNull View itemView) {
+                super(itemView);
+                tvTitle = itemView.findViewById(R.id.tvNoteTitle);
+                tvContent = itemView.findViewById(R.id.tvNoteContent);
+                tvDate = itemView.findViewById(R.id.tvNoteDate);
+                btnDelete = itemView.findViewById(R.id.btnDelete);
+            }
         }
     }
 
-    private void toggleSearchContainer() {
-        if (searchContainer.getVisibility() == View.VISIBLE) {
-            searchContainer.setVisibility(View.GONE);
-        } else {
-            searchContainer.setVisibility(View.VISIBLE);
-            etSearch.requestFocus();
-        }
-    }
+    // --- Database Helper ---
+    private static class DatabaseHelper extends SQLiteOpenHelper {
 
-    private void findNext() {
-        String query = etSearch.getText().toString();
-        if (query.isEmpty()) return;
+        private static final String DATABASE_NAME = "noty.db";
+        private static final int DATABASE_VERSION = 1;
 
-        String content = etContent.getText().toString();
-        int selectionStart = etContent.getSelectionEnd();
-        int index = content.toLowerCase().indexOf(query.toLowerCase(), selectionStart);
+        private static final String TABLE_NOTES = "notes";
+        private static final String COLUMN_ID = "id";
+        private static final String COLUMN_TITLE = "title";
+        private static final String COLUMN_CONTENT = "content";
+        private static final String COLUMN_DATE = "date";
 
-        if (index == -1) {
-            // Loop back to start
-            index = content.toLowerCase().indexOf(query.toLowerCase(), 0);
+        public DatabaseHelper(Context context) {
+            super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
-        if (index != -1) {
-            etContent.requestFocus();
-            etContent.setSelection(index, index + query.length());
-        } else {
-            Toast.makeText(this, "Text not found", Toast.LENGTH_SHORT).show();
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+            String CREATE_NOTES_TABLE = "CREATE TABLE " + TABLE_NOTES + "("
+                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + COLUMN_TITLE + " TEXT,"
+                    + COLUMN_CONTENT + " TEXT,"
+                    + COLUMN_DATE + " TEXT" + ")";
+            db.execSQL(CREATE_NOTES_TABLE);
         }
-    }
 
-    private void replaceNext() {
-        String query = etSearch.getText().toString();
-        String replaceWith = etReplace.getText().toString();
-        if (query.isEmpty()) return;
-
-        int start = etContent.getSelectionStart();
-        int end = etContent.getSelectionEnd();
-        String selectedText = etContent.getText().subSequence(start, end).toString();
-
-        if (selectedText.equalsIgnoreCase(query)) {
-            etContent.getText().replace(start, end, replaceWith);
-            findNext();
-        } else {
-            findNext();
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
+            onCreate(db);
         }
-    }
 
-    private void replaceAll() {
-        String query = etSearch.getText().toString();
-        String replaceWith = etReplace.getText().toString();
-        if (query.isEmpty()) return;
+        public void addNote(Note note) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_TITLE, note.getTitle());
+            values.put(COLUMN_CONTENT, note.getContent());
+            values.put(COLUMN_DATE, note.getDate());
 
-        String content = etContent.getText().toString();
-        String updated = content.replaceAll("(?i)" + java.util.regex.Pattern.quote(query), replaceWith);
-        etContent.setText(updated);
-        Toast.makeText(this, "Replaced all occurrences", Toast.LENGTH_SHORT).show();
-    }
-
-    private void changeFontSize(float delta) {
-        float newSize = currentFontSize + delta;
-        if (newSize >= 10f && newSize <= 40f) {
-            currentFontSize = newSize;
-            etContent.setTextSize(TypedValue.COMPLEX_UNIT_SP, currentFontSize);
+            db.insert(TABLE_NOTES, null, values);
+            db.close();
         }
-    }
 
-    private void toggleFontType() {
-        isMonospace = !isMonospace;
-        if (isMonospace) {
-            etContent.setTypeface(Typeface.MONOSPACE);
-        } else {
-            etContent.setTypeface(Typeface.DEFAULT);
+        public List<Note> getAllNotes() {
+            List<Note> noteList = new ArrayList<>();
+            String selectQuery = "SELECT * FROM " + TABLE_NOTES + " ORDER BY " + COLUMN_ID + " DESC";
+
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    long id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID));
+                    String title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE));
+                    String content = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CONTENT));
+                    String date = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DATE));
+
+                    Note note = new Note(id, title, content, date);
+                    noteList.add(note);
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+            db.close();
+            return noteList;
         }
-        Toast.makeText(this, isMonospace ? "Monospace Font" : "Default Font", Toast.LENGTH_SHORT).show();
-    }
 
-    private void updateTitle() {
-        String title = currentFileName + (isModified ? " *" : "");
-        tvFileName.setText(title);
-    }
+        public void updateNote(Note note) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_TITLE, note.getTitle());
+            values.put(COLUMN_CONTENT, note.getContent());
+            values.put(COLUMN_DATE, note.getDate());
 
-    private void updateStats() {
-        String text = etContent.getText().toString();
-        int charCount = text.length();
-        int lineCount = text.isEmpty() ? 1 : etContent.getLineCount();
-        if (lineCount == 0) lineCount = text.split("\r\n|\r|\n").length;
+            db.update(TABLE_NOTES, values, COLUMN_ID + " = ?", new String[]{String.valueOf(note.getId())});
+            db.close();
+        }
 
-        String trimmed = text.trim();
-        int wordCount = trimmed.isEmpty() ? 0 : trimmed.split("\\s+").length;
-
-        String statsText = "Words: " + wordCount + "  |  Chars: " + charCount + "  |  Lines: " + lineCount;
-        tvStats.setText(statsText);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isModified) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Exit textedit")
-                    .setMessage("You have unsaved changes. Exit without saving?")
-                    .setPositiveButton("Exit", (dialog, which) -> finish())
-                    .setNegativeButton("Cancel", null)
-                    .show();
-        } else {
-            super.onBackPressed();
+        public void deleteNote(long id) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.delete(TABLE_NOTES, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+            db.close();
         }
     }
 }
