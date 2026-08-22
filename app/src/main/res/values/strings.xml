@@ -1,13 +1,3 @@
 <resources>
-    <string name="app_name">App_chat_1</string>
-    <string name="type_a_message">Type a message...</string>
-    <string name="send">Send</string>
-    <string name="chat_partner_name">AI Companion</string>
-    <string name="status_online">Online</string>
-    <string name="status_typing">Typing...</string>
-    <string name="clear_chat">Clear Chat</string>
-    <string name="chip_hello">Hello 👋</string>
-    <string name="chip_joke">Tell me a joke 😄</string>
-    <string name="chip_how_are_you">How are you? 🤔</string>
-    <string name="chip_quote">Inspire me ✨</string>
+    <string name="app_name">Calcky</string>
 </resources>
