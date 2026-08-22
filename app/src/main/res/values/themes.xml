@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.BiggestFish" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">#0288D1</item>
-        <item name="colorPrimaryVariant">#01579B</item>
+    <style name="Theme.AppChat1" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#128C7E</item>
+        <item name="colorPrimaryVariant">#075E54</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorSecondary">#00ACC1</item>
-        <item name="colorSecondaryVariant">#00838F</item>
+        <item name="colorSecondary">#25D366</item>
+        <item name="colorSecondaryVariant">#128C7E</item>
         <item name="colorOnSecondary">#FFFFFF</item>
-        <item name="android:statusBarColor">#01579B</item>
+        <item name="android:statusBarColor">#075E54</item>
     </style>
 </resources>
