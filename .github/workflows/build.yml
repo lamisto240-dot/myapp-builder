@@ -23,7 +23,12 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Generate Gradle Wrapper (version 8.5)
+      - name: Setup Gradle 8.5
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.5'
+
+      - name: Generate Gradle Wrapper
         run: |
           if [ ! -f gradlew ]; then
             gradle wrapper --gradle-version 8.5
