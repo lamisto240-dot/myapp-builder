@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.colorflip.app'
+    namespace 'com.calc.app'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.colorflip.app"
+        applicationId "com.calc.app"
         minSdk 24
         targetSdk 34
         versionCode 1
@@ -28,6 +28,6 @@ android {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
