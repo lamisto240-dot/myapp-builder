@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.TextEdit" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">#1976D2</item>
-        <item name="colorPrimaryVariant">#0D47A1</item>
+    <style name="Theme.Noty" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#4F46E5</item>
+        <item name="colorPrimaryVariant">#4338CA</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="colorSecondary">#2196F3</item>
-        <item name="android:statusBarColor">#0D47A1</item>
+        <item name="colorSecondary">#10B981</item>
+        <item name="colorSecondaryVariant">#059669</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="android:statusBarColor">#4338CA</item>
     </style>
 </resources>
