@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Calcky" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">#FF9500</item>
-        <item name="colorPrimaryVariant">#D87D00</item>
+    <style name="Theme.TextEdit" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#1976D2</item>
+        <item name="colorPrimaryVariant">#0D47A1</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="android:statusBarColor">#121212</item>
-        <item name="android:windowBackground">#121212</item>
+        <item name="colorSecondary">#2196F3</item>
+        <item name="android:statusBarColor">#0D47A1</item>
     </style>
 </resources>
