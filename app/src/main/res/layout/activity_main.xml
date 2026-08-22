@@ -1,183 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="#F5F5FA">
 
-    <!-- Display Area -->
-    <LinearLayout
+    <!-- Header Bar -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="0dp"
+        app:cardBackgroundColor="#6200EE">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/avatarCard"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                app:cardCornerRadius="21dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="🤖"
+                    android:textSize="22sp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/avatarCard"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvChatPartnerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/chat_partner_name"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/status_online"
+                    android:textColor="#D0C4FF"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnClearChat"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/clear_chat"
+                android:src="@android:drawable/ic_menu_delete"
+                app:tint="#FFFFFF" />
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- RecyclerView Messages -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMessages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:gravity="bottom|end"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="8dp"
+        android:clipToPadding="false" />
 
-        <TextView
-            android:id="@+id/tvExpression"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="start"
-            android:singleLine="true"
-            android:textColor="#888888"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/tvResult"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:ellipsize="start"
-            android:singleLine="true"
-            android:text="0"
-            android:textColor="#FFFFFF"
-            android:textSize="48sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <!-- Keypad -->
-    <LinearLayout
+    <!-- Suggestion Chips -->
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:scrollbars="none"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
 
-        <!-- Row 1 -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnClear"
-                style="@style/CalcButton.Function"
-                android:text="AC" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipHello"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:text="@string/chip_hello" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDelete"
-                style="@style/CalcButton.Function"
-                android:text="⌫" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipJoke"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:text="@string/chip_joke" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnPercent"
-                style="@style/CalcButton.Function"
-                android:text="%" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipHowAreYou"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:text="@string/chip_how_are_you" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDivide"
-                style="@style/CalcButton.Operator"
-                android:text="÷" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipQuote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:text="@string/chip_quote" />
         </LinearLayout>
+    </HorizontalScrollView>
 
-        <!-- Row 2 -->
+    <!-- Bottom Typing Area -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="0dp"
+        app:cardBackgroundColor="#FFFFFF">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="8dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn7"
-                style="@style/CalcButton"
-                android:text="7" />
+            <ImageButton
+                android:id="@+id/btnAttach"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Attach"
+                android:src="@android:drawable/ic_menu_camera"
+                app:tint="#6200EE" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn8"
-                style="@style/CalcButton"
-                android:text="8" />
+            <EditText
+                android:id="@+id/etMessage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@null"
+                android:hint="@string/type_a_message"
+                android:maxLines="4"
+                android:padding="10dp"
+                android:textSize="15sp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn9"
-                style="@style/CalcButton"
-                android:text="9" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnMultiply"
-                style="@style/CalcButton.Operator"
-                android:text="×" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnSend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/send"
+                app:fabCustomSize="44dp"
+                app:maxImageSize="20dp"
+                app:srcCompat="@android:drawable/ic_menu_send"
+                app:tint="#FFFFFF"
+                app:backgroundTint="#6200EE" />
         </LinearLayout>
-
-        <!-- Row 3 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn4"
-                style="@style/CalcButton"
-                android:text="4" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn5"
-                style="@style/CalcButton"
-                android:text="5" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn6"
-                style="@style/CalcButton"
-                android:text="6" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSubtract"
-                style="@style/CalcButton.Operator"
-                android:text="-" />
-        </LinearLayout>
-
-        <!-- Row 4 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn1"
-                style="@style/CalcButton"
-                android:text="1" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn2"
-                style="@style/CalcButton"
-                android:text="2" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn3"
-                style="@style/CalcButton"
-                android:text="3" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAdd"
-                style="@style/CalcButton.Operator"
-                android:text="+" />
-        </LinearLayout>
-
-        <!-- Row 5 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnPlusMinus"
-                style="@style/CalcButton"
-                android:text="±" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn0"
-                style="@style/CalcButton"
-                android:text="0" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDecimal"
-                style="@style/CalcButton"
-                android:text="." />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnEqual"
-                style="@style/CalcButton.Equal"
-                android:text="=" />
-        </LinearLayout>
-
-    </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>
