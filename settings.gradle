@@ -11,5 +11,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "BiggestFish"
+rootProject.name = "App_chat_1"
 include ':app'
