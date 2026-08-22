@@ -11,5 +11,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "helloworld"
+rootProject.name = "appnotemb"
 include ':app'
