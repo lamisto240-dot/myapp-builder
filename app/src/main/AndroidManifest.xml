@@ -3,9 +3,9 @@
 
     <application
         android:allowBackup="true"
-        android:label="helloworld"
+        android:label="appnotemb"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Helloworld">
+        android:theme="@style/Theme.Appnotemb">
         <activity
             android:name=".MainActivity"
             android:exported="true">
